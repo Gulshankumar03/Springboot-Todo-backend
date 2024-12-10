@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/users/{username}/todos")
 public class TodoController {
 
     @Autowired
@@ -21,20 +20,25 @@ public class TodoController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
+    @GetMapping("/")
+    public String getRootResponse() {
+        return "welcome to TaskMate.";
+    }
+
+    @GetMapping("/api/users/{username}/todos")
     public ResponseEntity<?> getTodos(@PathVariable String username) {
         List<Todo> todos = todoService.getTodosByUsername(username);
         return ResponseEntity.ok(todos);
     }
 
-    @PostMapping
+    @PostMapping("/api/users/{username}/todos")
     public ResponseEntity<?> createTodo(@RequestBody Todo todo, @PathVariable String username) {
         Todo createdTodo = todoService.createTodo(todo, username);
         return ResponseEntity.ok(createdTodo);
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/api/users/{username}/todos/{id}")
     public ResponseEntity<?> updateTodo(@PathVariable String username,
                                         @PathVariable Long id,
                                         @RequestBody Map<String, Object> updates) {
@@ -48,13 +52,13 @@ public class TodoController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/users/{username}/todos/{id}")
     public ResponseEntity<?> deleteTodo(@PathVariable String username, @PathVariable Long id) {
         todoService.deleteTodoByUser(username, id);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/all")
+    @DeleteMapping("/api/users/{username}/todos/all")
     public ResponseEntity<?> deleteAllTodos(@PathVariable String username) {
         todoService.deleteAllTodosByUser(username);
         return ResponseEntity.ok().build();
